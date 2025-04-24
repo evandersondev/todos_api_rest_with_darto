@@ -1,7 +1,10 @@
 import 'package:darto/darto.dart';
+import 'package:todos_api_rest_with_darto/database/db.dart';
 import 'package:todos_api_rest_with_darto/router.dart';
 
-void main() {
+void main() async {
+  await dartonic.sync();
+
   final app = Darto();
 
   app.use('/api/v1', rootRouter());
