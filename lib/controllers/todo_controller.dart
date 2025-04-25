@@ -1,12 +1,17 @@
 import 'package:darto/darto.dart';
-import 'package:dartonic/dartonic.dart';
+import 'package:todos_api_rest_with_darto/services/todo_service.dart';
 import 'package:zard/zard.dart';
 
-import 'package:todos_api_rest_with_darto/database/db.dart';
+import '../models/todo_model.dart';
 
 class TodoController {
+  final TodoService _service;
+
+  TodoController(this._service);
+
   void getAll(Request req, Response res) async {
-    final todos = await db.select().from('todos');
+    final todos = await _service.getTodos();
+
     return res.status(200).json(todos);
   }
 
@@ -17,12 +22,16 @@ class TodoController {
     });
 
     try {
-      final todo = todoBodySchema.parse(await req.body)!;
-      await db.insert('todos').values(todo);
+      final todo = todoBodySchema.parse(await req.body);
+      await _service.createTodo(TodoModel.fromJson(todo!));
 
       return res.status(201).end();
     } catch (e) {
-      return res.status(500).json({'Errors': todoBodySchema.getErrors()});
+      if (e is ZardError) {
+        return res.status(500).json({'Errors': todoBodySchema.getErrors()});
+      }
+
+      return res.status(500).json({'Error': e.toString()});
     }
   }
 
@@ -37,27 +46,19 @@ class TodoController {
       final id = paramSchema.parse(req.params['id']);
       final body = todoBodySchema.parse(await req.body);
 
-      final userExists = await db
-          .select()
-          .from('todos')
-          .where(eq('todos.id', id));
-
-      if (userExists.isEmpty) return res.status(404).send('Todo not found!');
-
-      print(body);
-
-      final todo =
-          await db
-              .update('todos')
-              .set(body!)
-              .where(eq('todos.id', id))
-              .returning();
+      final todo = await _service.updateTodo(
+        TodoModel.fromJson({...body!, 'id': id}),
+      );
 
       return res.status(200).json(todo);
     } catch (e) {
-      return res.status(500).json({
-        'Errors': [...todoBodySchema.getErrors(), ...paramSchema.getErrors()],
-      });
+      if (e is ZardError) {
+        return res.status(500).json({
+          'Errors': [...todoBodySchema.getErrors(), ...paramSchema.getErrors()],
+        });
+      }
+
+      return res.status(500).json({'Error': e.toString()});
     }
   }
 
@@ -67,9 +68,13 @@ class TodoController {
     try {
       final id = paramSchema.parse(req.params['id'] ?? '');
 
-      await db.delete('todos').where(eq('todos.id', id));
+      await _service.deleteTodo(id);
     } catch (e) {
-      return res.status(500).json({'Errors': paramSchema.getErrors()});
+      if (e is ZardError) {
+        return res.status(500).json({'Errors': paramSchema.getErrors()});
+      }
+
+      return res.status(500).json({'Error': e.toString()});
     }
 
     return res.status(204).end();
