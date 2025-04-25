@@ -4,13 +4,13 @@ version: 1.0.0
 # repository: https://github.com/my_org/my_repo
 
 environment:
-  sdk: ^3.7.3
+  sdk: ^3.7.2
 
 # Add regular dependencies here.
 dependencies:
   darto: ^0.0.21
-  dartonic: ^0.0.5
-  zard: ^0.0.8
+  dartonic: ^0.0.6
+  zard: ^0.0.9
   # path: ^1.8.0
 
 dev_dependencies:

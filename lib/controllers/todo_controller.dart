@@ -1,7 +1,8 @@
 import 'package:darto/darto.dart';
 import 'package:dartonic/dartonic.dart';
-import 'package:todos_api_rest_with_darto/database/db.dart';
 import 'package:zard/zard.dart';
+
+import 'package:todos_api_rest_with_darto/database/db.dart';
 
 class TodoController {
   void getAll(Request req, Response res) async {
@@ -12,7 +13,7 @@ class TodoController {
   Future<void> create(Request req, Response res) async {
     final todoBodySchema = z.map({
       'title': z.string().min(3),
-      // 'completed': z.bool().nullable(),
+      'completed': z.bool().optional(),
     });
 
     try {
@@ -34,20 +35,22 @@ class TodoController {
 
     try {
       final id = paramSchema.parse(req.params['id']);
-      final body = todoBodySchema.parse(await req.body)!;
+      final body = todoBodySchema.parse(await req.body);
 
       final userExists = await db
           .select()
           .from('todos')
-          .where(eq('todo.id', id));
+          .where(eq('todos.id', id));
 
-      if (userExists) return res.status(404).send('Todo not found!');
+      if (userExists.isEmpty) return res.status(404).send('Todo not found!');
+
+      print(body);
 
       final todo =
           await db
               .update('todos')
-              .values(body)
-              .where(eq('todo.id', id))
+              .set(body!)
+              .where(eq('todos.id', id))
               .returning();
 
       return res.status(200).json(todo);
@@ -64,7 +67,7 @@ class TodoController {
     try {
       final id = paramSchema.parse(req.params['id'] ?? '');
 
-      await db.delete('todos').where(eq('todo.id', id));
+      await db.delete('todos').where(eq('todos.id', id));
     } catch (e) {
       return res.status(500).json({'Errors': paramSchema.getErrors()});
     }

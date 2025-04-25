@@ -125,10 +125,10 @@ packages:
     dependency: "direct main"
     description:
       name: dartonic
-      sha256: a93254c8d6c5859d95f53f15062e03cc1a25b52b97d7c9f5f7dead74699c571e
+      sha256: aace3e26fb01f11ac79485f0da95b624d18f3ce0a342cfcba1696448d0b74a88
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   ffi:
     dependency: transitive
     description:
@@ -533,9 +533,9 @@ packages:
     dependency: "direct main"
     description:
       name: zard
-      sha256: "121d46f95b3275487af663b8a2e5495062dd9f0ac280a9a2bb7bda183feaa452"
+      sha256: f11a6deb82ccc5b590fdc03313868bdfdf4b723d3370dbaf8ae6b3f8cf8fe031
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.8"
+    version: "0.0.9"
 sdks:
-  dart: ">=3.7.3 <4.0.0"
+  dart: ">=3.7.2 <4.0.0"
