@@ -185,6 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  injectfy:
+    dependency: "direct main"
+    description:
+      name: injectfy
+      sha256: d64a1e5d59f0b39552008e22eb27899a3a633ee863f81d97137e8bc4a9511051
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   intl:
     dependency: transitive
     description:
@@ -533,9 +541,9 @@ packages:
     dependency: "direct main"
     description:
       name: zard
-      sha256: f11a6deb82ccc5b590fdc03313868bdfdf4b723d3370dbaf8ae6b3f8cf8fe031
+      sha256: "0f60f984549edb079603d6d25af4faf9851612c9dbcd4d877d44bc7d55d7ceb5"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.9"
+    version: "0.0.10"
 sdks:
   dart: ">=3.7.2 <4.0.0"

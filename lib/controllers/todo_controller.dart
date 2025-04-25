@@ -28,7 +28,7 @@ class TodoController {
       return res.status(201).end();
     } catch (e) {
       if (e is ZardError) {
-        return res.status(500).json({'Errors': todoBodySchema.getErrors()});
+        return res.status(NOT_ACCEPTABLE).json({'Errors': e.format()});
       }
 
       return res.status(500).json({'Error': e.toString()});
@@ -53,9 +53,7 @@ class TodoController {
       return res.status(200).json(todo);
     } catch (e) {
       if (e is ZardError) {
-        return res.status(500).json({
-          'Errors': [...todoBodySchema.getErrors(), ...paramSchema.getErrors()],
-        });
+        return res.status(500).json({'Errors': e.format()});
       }
 
       return res.status(500).json({'Error': e.toString()});
@@ -71,7 +69,7 @@ class TodoController {
       await _service.deleteTodo(id);
     } catch (e) {
       if (e is ZardError) {
-        return res.status(500).json({'Errors': paramSchema.getErrors()});
+        return res.status(500).json({'Errors': e.format()});
       }
 
       return res.status(500).json({'Error': e.toString()});
