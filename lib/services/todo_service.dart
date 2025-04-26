@@ -16,30 +16,22 @@ class TodoService {
   }
 
   Future<TodoModel> updateTodo(TodoModel todo) async {
-    try {
-      final todoExists = await _repository.getTodoById(todo.id!);
+    final todoExists = await _repository.getTodoById(todo.id!);
 
-      if (todoExists == null) {
-        throw NotFoundException('Todo not found');
-      }
-
-      return _repository.updateTodo(todo);
-    } catch (_) {
-      throw InternalServerException('Internal server error');
+    if (todoExists == null) {
+      throw NotFoundException('Todo not found');
     }
+
+    return _repository.updateTodo(todo);
   }
 
   Future<void> deleteTodo(int id) async {
-    try {
-      final todoExists = await _repository.getTodoById(id);
+    final todoExists = await _repository.getTodoById(id);
 
-      if (todoExists == null) {
-        throw NotFoundException('Todo not found');
-      }
-
-      return _repository.deleteTodo(id);
-    } catch (_) {
-      throw InternalServerException('Internal server error');
+    if (todoExists == null) {
+      throw NotFoundException('Todo not found');
     }
+
+    return _repository.deleteTodo(id);
   }
 }

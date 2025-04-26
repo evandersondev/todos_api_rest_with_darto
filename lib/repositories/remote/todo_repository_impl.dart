@@ -37,6 +37,8 @@ class TodoRepositoryImpl implements TodoRepository {
   @override
   Future<TodoModel?> getTodoById(int id) async {
     final result = await db.select().from('todos').where(eq('todos.id', id));
-    return Future.value(TodoModel.fromJson(result.first));
+    return result.isEmpty
+        ? null
+        : Future.value(TodoModel.fromJson(result.first));
   }
 }
