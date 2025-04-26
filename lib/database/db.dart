@@ -1,6 +1,6 @@
 import 'package:dartonic/dartonic.dart';
 
-import '../schemas/todo_schema.dart';
+import '../schemas/tables/todo_table_schema.dart';
 
-final dartonic = Dartonic('sqlite::memory:', schemas: [todoSchema]);
+final dartonic = Dartonic('sqlite::memory:', schemas: [todoTableSchema]);
 final db = dartonic.instance;

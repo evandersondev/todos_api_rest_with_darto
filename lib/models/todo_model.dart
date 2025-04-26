@@ -1,9 +1,9 @@
 class TodoModel {
   final int? id;
-  final String title;
+  final String? title;
   final bool completed;
 
-  TodoModel({this.id, required this.title, this.completed = false});
+  TodoModel({this.id, this.title, this.completed = false});
 
   factory TodoModel.fromJson(Map<String, dynamic> json) {
     return TodoModel(
@@ -17,8 +17,8 @@ class TodoModel {
     Map<String, dynamic> map = {};
 
     if (id != null) map['id'] = id;
+    if (title != null) map['title'] = title;
 
-    map['title'] = title;
     map['completed'] = completed;
 
     return map;

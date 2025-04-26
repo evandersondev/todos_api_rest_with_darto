@@ -11,7 +11,7 @@ dependencies:
   darto: ^0.0.21
   dartonic: ^0.0.6
   injectfy: ^1.0.1
-  zard: ^0.0.10
+  zard: ^0.0.11
   # path: ^1.8.0
 
 dev_dependencies:

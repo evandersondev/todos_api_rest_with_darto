@@ -1,3 +1,4 @@
+import '../errors/app_exception.dart';
 import '../models/todo_model.dart';
 import '../repositories/todo_repository.dart';
 
@@ -6,31 +7,39 @@ class TodoService {
 
   TodoService(this._repository);
 
-  Future<List<TodoModel>> getTodos() async {
+  Future<List<TodoModel>> getTodos() {
     return _repository.getTodos();
   }
 
-  Future<void> createTodo(TodoModel todo) async {
+  Future<void> createTodo(TodoModel todo) {
     return _repository.createTodo(todo);
   }
 
   Future<TodoModel> updateTodo(TodoModel todo) async {
-    final todoExists = await _repository.getTodoById(todo.id!);
+    try {
+      final todoExists = await _repository.getTodoById(todo.id!);
 
-    if (todoExists.id == null) {
-      throw Exception('Todo not found');
+      if (todoExists == null) {
+        throw NotFoundException('Todo not found');
+      }
+
+      return _repository.updateTodo(todo);
+    } catch (_) {
+      throw InternalServerException('Internal server error');
     }
-
-    return _repository.updateTodo(todo);
   }
 
   Future<void> deleteTodo(int id) async {
-    final todoExists = await _repository.getTodoById(id);
+    try {
+      final todoExists = await _repository.getTodoById(id);
 
-    if (todoExists.id == null) {
-      throw Exception('Todo not found');
+      if (todoExists == null) {
+        throw NotFoundException('Todo not found');
+      }
+
+      return _repository.deleteTodo(id);
+    } catch (_) {
+      throw InternalServerException('Internal server error');
     }
-
-    return _repository.deleteTodo(id);
   }
 }

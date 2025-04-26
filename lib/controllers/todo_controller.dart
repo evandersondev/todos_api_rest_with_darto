@@ -4,6 +4,18 @@ import 'package:zard/zard.dart';
 
 import '../models/todo_model.dart';
 
+final createTodoBodySchema = z.map({
+  'title': z.string().min(3),
+  'completed': z.bool().optional(),
+});
+
+final updateTodoBodySchema = z.map({
+  'title': z.string().min(3).optional(),
+  'completed': z.bool().optional(),
+});
+
+final idParamSchema = z.coerce.int();
+
 class TodoController {
   final TodoService _service;
 
@@ -16,35 +28,24 @@ class TodoController {
   }
 
   Future<void> create(Request req, Response res) async {
-    final todoBodySchema = z.map({
-      'title': z.string().min(3),
-      'completed': z.bool().optional(),
-    });
-
     try {
-      final todo = todoBodySchema.parse(await req.body);
+      final todo = await createTodoBodySchema.parseAsync(req.body);
       await _service.createTodo(TodoModel.fromJson(todo!));
 
-      return res.status(201).end();
+      return res.status(CREATED).end();
     } catch (e) {
       if (e is ZardError) {
         return res.status(NOT_ACCEPTABLE).json({'Errors': e.format()});
       }
 
-      return res.status(500).json({'Error': e.toString()});
+      return res.status(INTERNAL_SERVER_ERROR).json({'Error': e.toString()});
     }
   }
 
   void update(Request req, Response res) async {
-    final paramSchema = z.coerce.int();
-    final todoBodySchema = z.map({
-      'title': z.string().min(3),
-      'completed': z.bool().optional(),
-    });
-
     try {
-      final id = paramSchema.parse(req.params['id']);
-      final body = todoBodySchema.parse(await req.body);
+      final id = idParamSchema.parse(req.params['id']);
+      final body = await updateTodoBodySchema.parseAsync(req.body);
 
       final todo = await _service.updateTodo(
         TodoModel.fromJson({...body!, 'id': id}),
@@ -53,28 +54,25 @@ class TodoController {
       return res.status(200).json(todo);
     } catch (e) {
       if (e is ZardError) {
-        return res.status(500).json({'Errors': e.format()});
+        return res.status(NOT_ACCEPTABLE).json({'Errors': e.format()});
       }
 
-      return res.status(500).json({'Error': e.toString()});
+      return res.status(INTERNAL_SERVER_ERROR).json({'Error': e.toString()});
     }
   }
 
   void delete(Request req, Response res) async {
-    final paramSchema = z.coerce.int();
-
     try {
-      final id = paramSchema.parse(req.params['id'] ?? '');
+      final id = idParamSchema.parse(req.params['id'] ?? '');
 
       await _service.deleteTodo(id);
+      return res.status(204).end();
     } catch (e) {
       if (e is ZardError) {
-        return res.status(500).json({'Errors': e.format()});
+        return res.status(NOT_ACCEPTABLE).json({'Errors': e.format()});
       }
 
-      return res.status(500).json({'Error': e.toString()});
+      return res.status(INTERNAL_SERVER_ERROR).json({'Error': e.toString()});
     }
-
-    return res.status(204).end();
   }
 }

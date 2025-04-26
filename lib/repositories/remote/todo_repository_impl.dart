@@ -14,7 +14,6 @@ class TodoRepositoryImpl implements TodoRepository {
 
   @override
   Future<void> createTodo(TodoModel todo) async {
-    print(todo.toJson());
     await db.insert('todos').values(todo.toJson());
   }
 
@@ -36,7 +35,7 @@ class TodoRepositoryImpl implements TodoRepository {
   }
 
   @override
-  Future<TodoModel> getTodoById(int id) async {
+  Future<TodoModel?> getTodoById(int id) async {
     final result = await db.select().from('todos').where(eq('todos.id', id));
     return Future.value(TodoModel.fromJson(result.first));
   }
